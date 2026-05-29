@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central Bag — Consigne bagages Annecy</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF7F2;
+    --cream-2: #F2EDE3;
+    --cream-3: #E6DECE;
+    --purple: #7C3AED;
+    --purple-mid: #9B5CF6;
+    --purple-light: #A78BFA;
+    --purple-soft: #EDE9FE;
+    --yellow: #D4A017;
+    --text: #1C1917;
+    --text-2: #57534E;
+    --text-3: #A8A29E;
+    --white: #FFFFFF;
+    --wa: #25D366;
+    --wa-soft: #DCFCE7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* LANG BAR */
+  .lang-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: flex-end;
+    padding: 11px 28px;
+    background: rgba(250,247,242,0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--cream-3);
+  }
+  .lang-btn {
+    background: transparent;
+    border: 1.5px solid var(--cream-3);
+    color: var(--text-3);
+    padding: 4px 15px; border-radius: 20px; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+    transition: all 0.2s; margin-left: 6px;
+  }
+  .lang-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .lang-btn:hover:not(.active) { border-color: var(--purple-light); color: var(--purple); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 120px 24px 80px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero-glow {
+    position: absolute; width: 650px; height: 650px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(167,139,250,0.14) 0%, transparent 68%);
+    top: 45%; left: 50%; transform: translate(-50%, -50%); pointer-events: none;
+  }
+  .logo-wrap { margin-bottom: 28px; animation: fadeUp 0.65s ease both; }
+  .logo-wrap img { width: 170px; height: 170px; object-fit: contain; }
+
+  .hero-tagline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(44px, 8vw, 86px);
+    line-height: 1.05; letter-spacing: 2px;
+    animation: fadeUp 0.65s 0.1s ease both; opacity: 0;
+  }
+  .hero-tagline .purple { color: var(--purple); }
+
+  .hero-sub {
+    margin-top: 18px; font-size: 17px; color: var(--text-2);
+    max-width: 450px;
+    animation: fadeUp 0.65s 0.2s ease both; opacity: 0;
+  }
+  .hero-cta {
+    margin-top: 34px;
+    animation: fadeUp 0.65s 0.3s ease both; opacity: 0;
+    display: inline-block; background: var(--purple); color: #fff;
+    font-weight: 600; font-size: 15px; padding: 14px 34px; border-radius: 40px;
+    text-decoration: none; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,0.25); }
+
+  /* SECTIONS */
+  .band { padding: 72px 24px; }
+  .band-alt { background: var(--cream-2); }
+  .inner { max-width: 840px; margin: 0 auto; }
+
+  .s-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2.5px;
+    color: var(--purple-light); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .s-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(34px, 5vw, 56px);
+    letter-spacing: 1px; line-height: 1.05; margin-bottom: 36px;
+  }
+  .s-title .purple { color: var(--purple); }
+
+  /* HOURS */
+  .hours-card {
+    display: flex; align-items: center; gap: 28px;
+    background: var(--white); border: 1.5px solid var(--cream-3);
+    border-radius: 24px; padding: 38px 42px;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.06);
+  }
+  .hours-icon {
+    flex-shrink: 0; width: 66px; height: 66px;
+    background: var(--purple-soft); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .hours-icon svg { width: 30px; height: 30px; stroke: var(--purple); }
+  .hours-time {
+    font-family: 'Bebas Neue', sans-serif; font-size: 56px;
+    letter-spacing: 2px; color: var(--purple); line-height: 1;
+  }
+  .hours-days { font-size: 15px; color: var(--text-2); margin-top: 5px; }
+
+  /* PRICES */
+  .prices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .price-card {
+    background: var(--white); border: 1.5px solid var(--cream-3);
+    border-radius: 22px; padding: 34px 30px; position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  .price-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(124,58,237,0.1); }
+  .price-card.featured { border-color: var(--purple); background: var(--purple-soft); }
+  .price-badge {
+    position: absolute; top: -12px; left: 22px;
+    background: var(--purple); color: #fff;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    padding: 3px 13px; border-radius: 20px; text-transform: uppercase;
+  }
+  .price-amount {
+    font-family: 'Bebas Neue', sans-serif; font-size: 66px;
+    color: var(--text); line-height: 1;
+  }
+  .price-amount sup { font-size: 28px; vertical-align: top; margin-top: 10px; display: inline-block; }
+  .price-desc { margin-top: 10px; font-size: 14px; color: var(--text-2); line-height: 1.55; }
+  .price-desc strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 2px; }
+
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .contact-card {
+    background: var(--white); border: 1.5px solid var(--cream-3);
+    border-radius: 20px; padding: 26px 22px;
+    display: flex; flex-direction: column; gap: 12px;
+    text-decoration: none; color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  .contact-card:hover { transform: translateY(-3px); box-shadow: 0 8px 26px rgba(124,58,237,0.1); border-color: var(--purple-light); }
+  .contact-card.wa:hover { border-color: var(--wa); box-shadow: 0 8px 26px rgba(37,211,102,0.12); }
+  .c-icon {
+    width: 44px; height: 44px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--purple-soft);
+  }
+  .c-icon.green { background: var(--wa-soft); }
+  .c-icon svg { width: 20px; height: 20px; }
+  .c-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-3); margin-bottom: 2px; }
+  .c-value { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.4; }
+
+
+  /* SIMULATOR */
+  .sim-card {
+    background: var(--white); border: 1.5px solid var(--cream-3);
+    border-radius: 24px; padding: 32px 28px;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.06);
+  }
+  .sim-row {
+    display: flex; align-items: flex-end; gap: 12px;
+  }
+  .sim-field { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+  .sim-label { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-3); }
+  .sim-input {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px, 7vw, 42px); letter-spacing: 1px;
+    color: var(--purple); background: var(--purple-soft);
+    border: 1.5px solid transparent; border-radius: 14px;
+    padding: 10px 12px; width: 100%; cursor: pointer;
+    transition: border-color 0.2s; -webkit-appearance: none;
+  }
+  .sim-input:focus { outline: none; border-color: var(--purple); }
+  .sim-arrow { font-size: 22px; color: var(--text-3); padding-bottom: 14px; flex-shrink: 0; }
+  .sim-result {
+    margin-top: 28px; padding-top: 24px;
+    border-top: 1.5px solid var(--cream-3);
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  }
+  .sim-price {
+    font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 14vw, 72px);
+    line-height: 1; color: var(--purple); letter-spacing: 1px;
+  }
+  .sim-detail { font-size: 15px; color: var(--text-2); }
+  .sim-note { margin-top: 12px; font-size: 12px; color: var(--text-3); }
+  .sim-error { color: #DC2626; font-size: 14px; margin-top: 8px; }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 36px 24px;
+    border-top: 1px solid var(--cream-3);
+    color: var(--text-3); font-size: 13px;
+  }
+  footer .purple { color: var(--purple); font-weight: 600; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .d1 { transition-delay: 0.08s; } .d2 { transition-delay: 0.16s; } .d3 { transition-delay: 0.24s; }
+
+  @media (max-width: 620px) {
+    .prices-grid, .contact-grid { grid-template-columns: 1fr; }
+    .hours-card { flex-direction: column; text-align: center; gap: 14px; padding: 28px 20px; }
+    .hours-time { font-size: 42px; }
+    .lang-bar { padding: 10px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="setLang('en')">EN</button>
+  <button class="lang-btn" onclick="setLang('fr')">FR</button>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="logo-wrap"><img src="logo.png" alt="Central Bag" style="border-radius: 28px;"></div>
+  <h1 class="hero-tagline">
+    <span class="purple" data-en="Drop your bags," data-fr="Déposez vos sacs,">Drop your bags,</span><br>
+    <span data-en="explore Annecy" data-fr="explorez Annecy">explore Annecy</span>
+  </h1>
+  <p class="hero-sub"
+     data-en="Secure luggage storage in the heart of Annecy. Simple, fast, affordable."
+     data-fr="Consigne à bagages sécurisée au cœur d'Annecy. Simple, rapide, abordable.">
+    Secure luggage storage in the heart of Annecy. Simple, fast, affordable.
+  </p>
+  <a href="#contact" class="hero-cta" data-en="Find us →" data-fr="Nous trouver →">Find us →</a>
+</div>
+
+<!-- HOURS -->
+<div class="band band-alt">
+  <div class="inner">
+    <div class="s-label reveal" data-en="We're open" data-fr="Nous sommes ouverts">We're open</div>
+    <h2 class="s-title reveal"><span data-en="Opening " data-fr="Heures d'">Opening </span><span class="purple" data-en="Hours" data-fr="ouverture">Hours</span></h2>
+    <div class="hours-card reveal">
+      <div class="hours-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div>
+        <div class="hours-time">9h — 20h</div>
+        <div class="hours-days" data-en="Open every day · 7 days a week" data-fr="Ouvert tous les jours · 7 jours sur 7">Open every day · 7 days a week</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICES -->
+<div class="band">
+  <div class="inner">
+    <div class="s-label reveal" data-en="Clear pricing" data-fr="Tarifs clairs">Clear pricing</div>
+    <h2 class="s-title reveal"><span data-en="Our " data-fr="Nos ">Our </span><span class="purple" data-en="Rates" data-fr="Tarifs">Rates</span></h2>
+    <div class="prices-grid">
+      <div class="price-card reveal d1">
+        <div class="price-amount"><sup>€</sup>2</div>
+        <div class="price-desc">
+          <strong data-en="Per hour" data-fr="Par heure">Per hour</strong>
+          <span data-en="Perfect for a quick stop or a few hours in the city."
+                data-fr="Idéal pour une courte escale ou quelques heures en ville.">Perfect for a quick stop or a few hours in the city.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SIMULATOR -->
+<div class="band">
+  <div class="inner">
+    <div class="s-label reveal" data-en="Calculate your price" data-fr="Calculez votre tarif">Calculate your price</div>
+    <h2 class="s-title reveal"><span data-en="Price " data-fr="Simula">Price </span><span class="purple" data-en="Simulator" data-fr="teur">Simulator</span></h2>
+    <div class="sim-card reveal">
+      <div class="sim-row">
+        <div class="sim-field">
+          <label class="sim-label" data-en="Drop-off time" data-fr="Heure de dépôt">Drop-off time</label>
+          <input type="time" id="sim-start" value="09:00" class="sim-input">
+        </div>
+        <div class="sim-arrow">→</div>
+        <div class="sim-field">
+          <label class="sim-label" data-en="Pick-up time" data-fr="Heure de reprise">Pick-up time</label>
+          <input type="time" id="sim-end" value="14:00" class="sim-input">
+        </div>
+      </div>
+      <div class="sim-result">
+        <div class="sim-price" id="sim-price">€10</div>
+        <div class="sim-detail" id="sim-detail">5 hours × €2</div>
+      </div>
+      <div class="sim-note" id="sim-note" data-en="Billed per started hour · Open 9h–20h" data-fr="Facturé par heure entamée · Ouvert 9h–20h">Billed per started hour · Open 9h–20h</div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="band band-alt" id="contact">
+  <div class="inner">
+    <div class="s-label reveal" data-en="Come and see us" data-fr="Venez nous voir">Come and see us</div>
+    <h2 class="s-title reveal"><span class="purple" data-en="Find " data-fr="Nous ">Find </span><span data-en="us" data-fr="trouver">us</span></h2>
+    <div class="contact-grid">
+
+      <a class="contact-card reveal d1" href="https://www.google.com/maps/place/Central+Bag+Annecy+Bonlieu/@45.9021216,6.1240685,17z/data=!3m1!4b1!4m6!3m5!1s0x478b8f21eb56b851:0x7dc5211948fb8b1c!8m2!3d45.9021179!4d6.1266434!16s%2Fg%2F11w__58181?entry=ttu&g_ep=EgoyMDI2MDUyNS4wIKXMDSoASAFQAw%3D%3D" target="_blank">
+        <div class="c-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="c-label" data-en="Address" data-fr="Adresse">Address</div>
+          <div class="c-value">7 rue Président Favre<br>74000 Annecy</div>
+        </div>
+      </a>
+
+      <a class="contact-card reveal d2" href="tel:+33648122184">
+        <div class="c-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.89 12 19.79 19.79 0 0 1 1.85 3.41 2 2 0 0 1 3.84 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="c-label" data-en="Phone" data-fr="Téléphone">Phone</div>
+          <div class="c-value">06 48 12 21 84</div>
+        </div>
+      </a>
+
+      <a class="contact-card wa reveal d3" href="https://wa.me/33648122184" target="_blank">
+        <div class="c-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--wa)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="c-label">WhatsApp</div>
+          <div class="c-value">+33 6 48 12 21 84</div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 <span class="purple">Central Bag</span> · Annecy · 7 rue Président Favre</p>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.querySelectorAll('[data-' + lang + ']').forEach(el => {
+      el.textContent = el.getAttribute('data-' + lang);
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.textContent.trim().toLowerCase() === lang);
+    });
+    document.documentElement.lang = lang;
+  }
+
+  function calcPrice() {
+    var s = document.getElementById('sim-start').value;
+    var e = document.getElementById('sim-end').value;
+    var priceEl = document.getElementById('sim-price');
+    var detailEl = document.getElementById('sim-detail');
+    var noteEl = document.getElementById('sim-note');
+    if (!s || !e) return;
+    var sMin = parseInt(s.split(':')[0])*60 + parseInt(s.split(':')[1]);
+    var eMin = parseInt(e.split(':')[0])*60 + parseInt(e.split(':')[1]);
+    var lang = document.documentElement.lang || 'en';
+    if (eMin <= sMin) {
+      priceEl.textContent = '—';
+      detailEl.textContent = lang === 'fr' ? "L'heure de reprise doit être après le dépôt" : 'Pick-up must be after drop-off';
+      return;
+    }
+    var diffMin = eMin - sMin;
+    var hours = Math.ceil(diffMin / 60);
+    var price = hours * 2;
+    priceEl.textContent = '€' + price;
+    detailEl.textContent = hours + (hours > 1 ? (lang === 'fr' ? ' heures × €2' : ' hours × €2') : (lang === 'fr' ? ' heure × €2' : ' hour × €2'));
+  }
+  document.getElementById('sim-start').addEventListener('input', calcPrice);
+  document.getElementById('sim-end').addEventListener('input', calcPrice);
+  calcPrice();
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
